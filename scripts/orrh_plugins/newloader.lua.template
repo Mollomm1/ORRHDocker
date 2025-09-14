@@ -152,7 +152,7 @@ end
 --
 
 while (true) do
-	wait(0.5)
+	wait(0.1)
 	for i,v in pairs(Modules) do
 		local enabled = true
 		local s, r = pcall(function() enabled = v:IsEnabled(ParentFunctionScript, ParentClient) end)

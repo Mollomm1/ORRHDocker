@@ -2,6 +2,8 @@
 
 A Docker-based solution for deploying low-privilege, headless OnlyRetroRobloxHere servers quickly and easily.
 
+> if you are looking for a similar solution for Novetus use [NovetusDocker](https://github.com/Mollomm1/NovetusDocker).
+
 ---
 
 ## 🚧 Build Instructions
