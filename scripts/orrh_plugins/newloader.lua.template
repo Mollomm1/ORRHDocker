@@ -1,0 +1,168 @@
+--- START ORRH Plugins stuff ---
+
+Modules = {}
+local Players = game.Players
+CoreScriptName = "PluginLoader"
+ParentClient = "__CLIENT__"
+ParentFunctionScript = "Server"
+
+local function base64Decode(input)
+	local base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+	
+	-- Remove padding
+	input = string.gsub(input, "=", "")
+	
+	-- Map each char to its 6-bit binary representation
+	local binary = ""
+	for i = 1, #input do
+		local char = string.sub(input, i, i)
+		local index = string.find(base64Chars, char, 1, true) -- true = plain search
+		if not index then
+			error("Invalid base64 character: " .. tostring(char))
+		end
+		index = index - 1 -- 0-based index
+
+		-- Convert index to 6-bit binary string
+		local bin = ""
+		for j = 5, 0, -1 do
+			local bit = math.floor(index / (2 ^ j)) % 2
+			bin = bin .. bit
+		end
+		binary = binary .. bin
+	end
+
+	-- Remove trailing zero bits added during encoding (if any)
+	-- We only want full bytes (multiples of 8 bits)
+	local paddingBits = #binary % 8
+	if paddingBits ~= 0 then
+		binary = string.sub(binary, 1, #binary - paddingBits)
+	end
+
+	-- Convert every 8 bits back to a byte
+	local decoded = ""
+	for i = 1, #binary, 8 do
+		local chunk = string.sub(binary, i, i + 7)
+		if #chunk < 8 then break end -- safety
+		local byte = tonumber(chunk, 2)
+		if not byte then
+			error("Failed to parse binary chunk during decode: " .. chunk)
+		end
+		decoded = decoded .. string.char(byte)
+	end
+
+	return decoded
+end
+
+function AddModule(base64)
+	local success, response = pcall(function() return(loadstring(base64Decode(base64))()) end)
+	if (not success) then
+		print("PluginLoader: Failed to add script module: " .. response)
+	else
+		print("PluginLoader: Adding " .. response:Name())
+		Modules[#Modules + 1] = response
+	end
+end
+
+[[plugins]]
+
+local function waitForGame()
+    -- Wait for 'game' to exist
+    while not game do
+        wait(0.1)
+    end
+    
+    -- Optional: wait for at least one child in Workspace (map loaded)
+    while #game.Workspace:GetChildren() == 0 do
+        wait(0.1)
+    end
+
+    return true
+end
+
+-- PREINIT
+for i,v in pairs(Modules) do
+	local enabled = true
+	local s, r = pcall(function() enabled = v:IsEnabled(Script, Client) end)
+
+	if (enabled) then
+		local success, response = pcall(function() v:PreInit(Script, Client) end)
+		if (not success and not string.find(response, CoreScriptName)) then
+			print("PluginLoader: Failed to call PreInit: " .. response)
+		end
+	end
+end
+--
+
+Players.PlayerAdded:connect(function(Player)
+	for i,v in pairs(Modules) do
+		local enabled = true
+		local s, r = pcall(function() enabled = v:IsEnabled(ParentFunctionScript, ParentClient) end)
+
+		if (enabled) then
+			local success, response = pcall(function() v:OnPlayerAdded(Player) end)
+			if (not success and not string.find(response, CoreScriptName)) then
+				print("PluginLoader: Failed to call OnPlayerAdded: " .. response)
+			end
+		end
+	end
+end)
+
+Players.PlayerRemoving:connect(function(Player)
+	for i,v in pairs(Modules) do
+		local enabled = true
+		local s, r = pcall(function() enabled = v:IsEnabled(ParentFunctionScript, ParentClient) end)
+
+		if (enabled) then
+			local success, response = pcall(function() v:OnPlayerRemoved(Player) end)
+			if (not success and not string.find(response, CoreScriptName)) then
+				print("PluginLoader: Failed to call OnPlayerRemoved: " .. response)
+			end
+		end
+	end
+end)
+
+game.Players.PlayerAdded:connect(function(player)
+	player.CharacterAdded:connect(function(character)
+		for i,v in pairs(Modules) do
+			local enabled = true
+			local s, r = pcall(function() enabled = v:IsEnabled(ParentFunctionScript, ParentClient) end)
+
+			if (enabled) then
+				local success, response = pcall(function() v:OnLoadCharacter(Player, Appearance) end)
+				if (not success and not string.find(response, CoreScriptName)) then
+					print("PluginLoader: Failed to call OnLoadCharacter: " .. response)
+				end
+			end
+		end
+	end)
+end)
+
+-- POSTINIT
+for i,v in pairs(Modules) do
+	local enabled = true
+	local s, r = pcall(function() enabled = v:IsEnabled(ParentFunctionScript, ParentClient) end)
+
+	if (enabled) then
+		local success, response = pcall(function() v:PostInit() end)
+		if (not success and not string.find(response, CoreScriptName)) then
+			print("PluginLoader: Failed to call PostInit: " .. response)
+		end
+	end
+end
+--
+
+while (true) do
+	wait(0.5)
+	for i,v in pairs(Modules) do
+		local enabled = true
+		local s, r = pcall(function() enabled = v:IsEnabled(ParentFunctionScript, ParentClient) end)
+
+		if (enabled) then
+			local success, response = pcall(function() v:Update() end)
+			if (not success and not string.find(response, CoreScriptName)) then
+				print("PluginLoader: Failed to call Update: " .. response)
+			end
+		end
+	end
+end
+--- END ORRH Plugins stuff ---
