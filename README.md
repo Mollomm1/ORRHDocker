@@ -44,24 +44,14 @@ docker run -d \
 | Version Code | Description | Notes |
 | --- | --- | --- |
 | 2013L | **Default** | ✅ Works |
-| 2013M | Supported | ✅ Works |
-| 2013E | Supported | ✅ Works |
-| 2012L | Supported | ✅ Works |
-| 2012M | Supported | ✅ Works |
-| 2012E | Supported | ✅ Works |
-| 2011L | Supported | ✅ Works |
-| 2011M | Supported | ✅ Works |
-| 2011E | Supported | ✅ Works |
-| 2010L | Supported | ✅ Works |
-| 2010M | Supported | ✅ Works |
-| 2010E | Supported | ✅ Works |
-| 2009L | Supported | ✅ Works |
-| 2009M | Supported | ✅ Works |
-| 2009E | Supported | ✅ Works |
-| 2008L | Supported | ✅ Works |
-| 2008M | Supported | ✅ Works |
-| 2008E | Supported | 🟧 Works, but insecure. |
-| 2007E | Supported | 🟧 Works, but insecure. |
-| 2007M | Supported | 🟧 Works, but insecure. |
+| 2013M-2008M | Supported | ✅ Works |
+| 2008E-2007M | Supported | 🟧 Works, but insecure. |
 | 2007E-FakeFeb | Supported | 🟧 Works, but insecure. Can't track players. |
 | 2007E | Supported | 🟧 Works, but insecure. Can't track players. |
+
+## 👨‍💻 Custom Plugins
+
+ORRHDocker supports custom server plugins, which follow a structure very similar to Novetus addons.
+To use them, simply mount any folder containing your `.lua` plugin files to `/config/Plugins`.
+
+For reference, you can check out the included [example.lua](https://github.com/Mollomm1/ORRHDocker/blob/main/scripts/orrh_plugins/plugins/example.lua).

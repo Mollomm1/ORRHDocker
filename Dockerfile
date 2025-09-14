@@ -82,7 +82,7 @@ RUN bash /config/scripts/hostscriptstemplate.sh && \
 # Health Check, to ensure the server is still running.
 #
 
-#HEALTHCHECK --interval=10s --timeout=2m --start-period=10s \
-#    CMD curl -f --retry 3 --max-time 3 --retry-delay 3 http://127.0.0.1:3000/health || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
+HEALTHCHECK --interval=10s --timeout=2m --start-period=10s \
+    CMD curl -f --retry 3 --max-time 3 --retry-delay 3 http://127.0.0.1:3000/health || bash -c 'kill -s 15 -1 && (sleep 10; kill -s 9 -1)'
 
 ENTRYPOINT ["/config/scripts/start.sh"]
