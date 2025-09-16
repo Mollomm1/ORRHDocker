@@ -4,6 +4,8 @@ A Docker-based solution for deploying low-privilege, headless OnlyRetroRobloxHer
 
 ![Alt text](.github/preview.gif)
 
+> this container is using [ORRH-CLI](https://github.com/Mollomm1/ORRH-CLI) since 16 sept 2025.
+
 > if you are looking for a similar solution for Novetus use [NovetusDocker](https://github.com/Mollomm1/NovetusDocker).
 
 ---
@@ -34,7 +36,7 @@ docker run -d \
   -p 53640:53640/udp \
   -p 127.0.0.1:3000:3000 `# Optional: Track connected players on the server, it is heavely recommended to put this behind a reverse proxy.` \
   -e CLIENT=2013L `# Optional: Select the client version (default: 2013L)` \
-  -v ./mymap.rbxl:/config/OnlyRetroRobloxHere/maps/default.rbxl `# Optional: Mount a custom map` \
+  -v ./mymap.rbxl:/config/map.rbxl `# Optional: Mount a custom map` \
   -v ./Plugins:/config/Plugins `# Optional: Add custom plugins` \
   orrh
 ```
