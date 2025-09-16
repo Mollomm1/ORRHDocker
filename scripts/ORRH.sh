@@ -22,9 +22,12 @@ echo "
 -----------------------------------------------------
 "
 
+export CLIENT=${CLIENT:-"2013L"}
+
 # start everything
+(x11vnc) > /dev/null 2>&1 &
 (cd /config/scripts && python3 -m uvicorn server:app --host 0.0.0.0 --port 3000 --log-level critical) > /dev/null 2>&1 &
 /config/scripts/loadplugins.sh 
-WINEDLLOVERRIDES="wininet=b;winihttp=n" wine /config/OnlyRetroRobloxHere/OnlyRetroRobloxHere.exe &
-/config/scripts/getlogs.sh & startServer
+WINEARCH=win32 WINEDLLOVERRIDES="wininet=b;winihttp=n" wine /config/OnlyRetroRobloxHere/OnlyRetroRobloxHere.exe --host --client "$CLIENT" --port 53640 --map "Z:\\\\config\\\\map.rbxl" &
+/config/scripts/getlogs.sh
 wait
